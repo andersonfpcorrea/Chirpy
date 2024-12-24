@@ -49,6 +49,8 @@ go mod tidy
 
 ### Run Database Migrations
 
+Setup your Postgres, then run migrations with `goose`:
+
 ```sh
 goose -dir ./sql/schema postgres "postgres://username:password@localhost:5432/chirpy" up
 ```
