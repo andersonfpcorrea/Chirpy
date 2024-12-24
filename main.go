@@ -208,9 +208,30 @@ func main() {
 
 	})
 	mx.HandleFunc("GET /api/chirps", func(w http.ResponseWriter, r *http.Request) {
-		chirps, e := apiCfg.dbQueries.GetChirps(r.Context())
-		if e != nil {
-			http.Error(w, "Bad", http.StatusInternalServerError)
+		s := r.URL.Query().Get("author_id")
+		var chirps []database.Chirp
+		var err error
+
+		if s != "" {
+			uuidID, err := uuid.Parse(s)
+			if err != nil {
+				http.Error(w, "Invalid author ID", http.StatusBadRequest)
+				return
+			}
+
+			// Convert uuid.UUID to uuid.NullUUID
+			nullUUID := uuid.NullUUID{UUID: uuidID, Valid: true}
+			chirps, err = apiCfg.dbQueries.GetChirpsByUserId(r.Context(), nullUUID)
+			if err != nil {
+				http.Error(w, "asd", http.StatusInternalServerError)
+				return
+			}
+		} else {
+			chirps, err = apiCfg.dbQueries.GetChirps(r.Context())
+		}
+
+		if err != nil {
+			http.Error(w, "Error fetching chirps", http.StatusInternalServerError)
 			return
 		}
 
@@ -228,7 +249,7 @@ func main() {
 
 		jsonData, err := json.Marshal(chirpList)
 		if err != nil {
-			http.Error(w, "Failed", http.StatusInternalServerError)
+			http.Error(w, "Error marshalling chirps", http.StatusInternalServerError)
 			return
 		}
 
