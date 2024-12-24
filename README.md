@@ -29,3 +29,70 @@ Chirpy is a great starting point for anyone looking to learn how to build a web 
 git clone https://github.com/yourusername/chirpy.git
 cd chirpy
 ```
+
+### Set Up Environment Variables
+
+Create a .env file in the root directory of the project and add the following environment variables:
+
+```sh
+DB_URL=postgres://username:password@localhost:5432/chirpy
+PLATFORM=your_platform
+JWT_SECRET=your_jwt_secret
+POLKA_KEY=your_polka_key
+```
+
+### Install Dependencies
+
+```sh
+go mod tidy
+```
+
+### Run Database Migrations
+
+```sh
+goose -dir ./migrations postgres "postgres://username:password@localhost:5432/chirpy" up
+```
+
+### Generate Go Code from SQL Queries
+
+```sh
+sqlc generate
+```
+
+## Running the Project
+
+### Start the server
+
+```sh
+go run .
+```
+
+The server will start on http://localhost:8080.
+
+## API Endpoints
+
+### User Endpoints
+
+- POST /api/users: Create a new user
+- PUT /api/users: Update user email and password
+- POST /api/refresh: Refresh JWT token
+- POST /api/revoke: Revoke refresh token
+
+### Chirp Endpoints
+
+- POST /api/chirps: Create a new chirp
+- GET /api/chirps: Get all chirps (with optional sorting and filtering by user ID)
+- GET /api/chirps/{id}: Get a specific chirp by ID
+- DELETE /api/chirps/{id}: Delete a chirp by ID
+
+### Webhook Endpoints
+
+- POST /api/polka/webhooks: Handle external events from Polka (fake company)
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+
+## License
+
+MIT
