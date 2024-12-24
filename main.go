@@ -24,6 +24,7 @@ func main() {
 	dbURL := os.Getenv("DB_URL")
 	plat := os.Getenv("PLATFORM")
 	jwtSecret := os.Getenv("JWT_SECRET")
+	polkaKey := os.Getenv("POLKA_KEY")
 	db, _ := sql.Open("postgres", dbURL)
 	dbQueries := database.New(db)
 
@@ -33,6 +34,7 @@ func main() {
 		dbQueries:      dbQueries,
 		platform:       plat,
 		jwtSecret:      jwtSecret,
+		polkaKey:       polkaKey,
 	}
 
 	mx := http.NewServeMux()
@@ -131,6 +133,11 @@ func main() {
 		w.WriteHeader(http.StatusNoContent)
 	})
 	mx.HandleFunc("POST /api/polka/webhooks", func(w http.ResponseWriter, r *http.Request) {
+		apiKey, err := auth.GetAPIKey(r.Header)
+		if err != nil || apiKey != apiCfg.polkaKey {
+			http.Error(w, "asd", http.StatusUnauthorized)
+			return
+		}
 		reqPayload := struct {
 			Event string `json:"event"`
 			Data  struct {
@@ -497,6 +504,7 @@ type apiConfig struct {
 	dbQueries      *database.Queries
 	platform       string
 	jwtSecret      string
+	polkaKey       string
 }
 
 func (cfg *apiConfig) handlerReset(w http.ResponseWriter, r *http.Request) {
