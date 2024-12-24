@@ -208,46 +208,69 @@ func main() {
 
 	})
 	mx.HandleFunc("GET /api/chirps", func(w http.ResponseWriter, r *http.Request) {
-		s := r.URL.Query().Get("author_id")
-		var chirps []database.Chirp
-		var err error
-
-		if s != "" {
-			uuidID, err := uuid.Parse(s)
-			if err != nil {
-				http.Error(w, "Invalid author ID", http.StatusBadRequest)
-				return
-			}
-
-			// Convert uuid.UUID to uuid.NullUUID
-			nullUUID := uuid.NullUUID{UUID: uuidID, Valid: true}
-			chirps, err = apiCfg.dbQueries.GetChirpsByUserId(r.Context(), nullUUID)
-			if err != nil {
-				http.Error(w, "asd", http.StatusInternalServerError)
-				return
-			}
-		} else {
-			chirps, err = apiCfg.dbQueries.GetChirps(r.Context())
+		order := "ASC"
+		if r.URL.Query().Get("sort") == "desc" {
+			order = "DESC"
 		}
+		query := fmt.Sprintf(`
+		SELECT id, created_at, updated_at, body, user_id
+		FROM chirps
+		ORDER by created_at %s;`, order)
 
-		if err != nil {
-			http.Error(w, "Error fetching chirps", http.StatusInternalServerError)
+		rows, dberr := db.QueryContext(r.Context(), query)
+		if dberr != nil {
+			http.Error(w, "something wrong", http.StatusInternalServerError)
 			return
 		}
+		defer rows.Close()
 
-		var chirpList []Chirp
-		for _, d := range chirps {
-			chirp := Chirp{
-				ID:        d.ID.String(),
-				CreatedAt: d.CreatedAt,
-				UpdatedAt: d.UpdatedAt,
-				Body:      d.Body,
-				UserId:    d.UserID,
+		var chirps []Chirp
+		for rows.Next() {
+			var chirp Chirp
+			if err := rows.Scan(&chirp.ID, &chirp.CreatedAt, &chirp.UpdatedAt, &chirp.Body, &chirp.UserId); err != nil {
+				http.Error(w, "asdasdwqeqwewq", http.StatusInternalServerError)
+				return
 			}
-			chirpList = append(chirpList, chirp)
+			chirps = append(chirps, chirp)
 		}
 
-		jsonData, err := json.Marshal(chirpList)
+		// var err error
+
+		// if s != "" {
+		// 	uuidID, err := uuid.Parse(s)
+		// 	if err != nil {
+		// 		http.Error(w, "Invalid author ID", http.StatusBadRequest)
+		// 		return
+		// 	}
+
+		// 	// Convert uuid.UUID to uuid.NullUUID
+		// 	nullUUID := uuid.NullUUID{UUID: uuidID, Valid: true}
+		// 	chirps, err = apiCfg.dbQueries.GetChirpsByUserId(r.Context(), nullUUID)
+		// 	if err != nil {
+		// 		http.Error(w, "asd", http.StatusInternalServerError)
+		// 		return
+		// 	}
+		// } else {
+		// 	chirps, err = apiCfg.dbQueries.GetChirps(r.Context())
+		// }
+
+		// if err != nil {
+		// 	http.Error(w, "Error fetching chirps", http.StatusInternalServerError)
+		// 	return
+		// }
+
+		// for _, d := range chirps {
+		// 	chirp := Chirp{
+		// 		ID:        d.ID.String(),
+		// 		CreatedAt: d.CreatedAt,
+		// 		UpdatedAt: d.UpdatedAt,
+		// 		Body:      d.Body,
+		// 		UserId:    d.UserID,
+		// 	}
+		// 	chirpList = append(chirpList, chirp)
+		// }
+
+		jsonData, err := json.Marshal(chirps)
 		if err != nil {
 			http.Error(w, "Error marshalling chirps", http.StatusInternalServerError)
 			return
