@@ -234,42 +234,6 @@ func main() {
 			chirps = append(chirps, chirp)
 		}
 
-		// var err error
-
-		// if s != "" {
-		// 	uuidID, err := uuid.Parse(s)
-		// 	if err != nil {
-		// 		http.Error(w, "Invalid author ID", http.StatusBadRequest)
-		// 		return
-		// 	}
-
-		// 	// Convert uuid.UUID to uuid.NullUUID
-		// 	nullUUID := uuid.NullUUID{UUID: uuidID, Valid: true}
-		// 	chirps, err = apiCfg.dbQueries.GetChirpsByUserId(r.Context(), nullUUID)
-		// 	if err != nil {
-		// 		http.Error(w, "asd", http.StatusInternalServerError)
-		// 		return
-		// 	}
-		// } else {
-		// 	chirps, err = apiCfg.dbQueries.GetChirps(r.Context())
-		// }
-
-		// if err != nil {
-		// 	http.Error(w, "Error fetching chirps", http.StatusInternalServerError)
-		// 	return
-		// }
-
-		// for _, d := range chirps {
-		// 	chirp := Chirp{
-		// 		ID:        d.ID.String(),
-		// 		CreatedAt: d.CreatedAt,
-		// 		UpdatedAt: d.UpdatedAt,
-		// 		Body:      d.Body,
-		// 		UserId:    d.UserID,
-		// 	}
-		// 	chirpList = append(chirpList, chirp)
-		// }
-
 		jsonData, err := json.Marshal(chirps)
 		if err != nil {
 			http.Error(w, "Error marshalling chirps", http.StatusInternalServerError)
@@ -597,5 +561,3 @@ type Chirp struct {
 	Body      string        `json:"body"`
 	UserId    uuid.NullUUID `json:"user_id"`
 }
-
-// psql "postgres://anderson.correa:@localhost:5432/chirpy"

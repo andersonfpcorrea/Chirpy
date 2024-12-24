@@ -27,7 +27,7 @@ Chirpy is a great starting point for anyone looking to learn how to build a web 
 
 ```sh
 git clone git@github.com:andersonfpcorrea/Chirpy.git
-cd chirpy
+cd Chirpy
 ```
 
 ### Set Up Environment Variables
@@ -35,8 +35,8 @@ cd chirpy
 Create a .env file in the root directory of the project and add the following environment variables:
 
 ```sh
-DB_URL=postgres://username:password@localhost:5432/chirpy
-PLATFORM=your_platform
+DB_URL=postgres://username:password@localhost:5432/chirpy?sslmode=disable
+PLATFORM=dev
 JWT_SECRET=your_jwt_secret
 POLKA_KEY=your_polka_key
 ```
@@ -50,7 +50,7 @@ go mod tidy
 ### Run Database Migrations
 
 ```sh
-goose -dir ./migrations postgres "postgres://username:password@localhost:5432/chirpy" up
+goose -dir ./sql/schema postgres "postgres://username:password@localhost:5432/chirpy" up
 ```
 
 ### Generate Go Code from SQL Queries
@@ -81,7 +81,7 @@ The server will start on http://localhost:8080.
 ### Chirp Endpoints
 
 - POST /api/chirps: Create a new chirp
-- GET /api/chirps: Get all chirps (with optional sorting and filtering by user ID)
+- GET /api/chirps: Get all chirps (with optional sorting)
 - GET /api/chirps/{id}: Get a specific chirp by ID
 - DELETE /api/chirps/{id}: Delete a chirp by ID
 
