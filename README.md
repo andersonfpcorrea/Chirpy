@@ -26,7 +26,7 @@ Chirpy is a great starting point for anyone looking to learn how to build a web 
 ### Clone the Repository
 
 ```sh
-git clone https://github.com/yourusername/chirpy.git
+git clone git@github.com:andersonfpcorrea/Chirpy.git
 cd chirpy
 ```
 
