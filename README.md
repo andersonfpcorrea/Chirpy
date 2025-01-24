@@ -86,11 +86,3 @@ The server will start on http://localhost:8080.
 ### Webhook Endpoints
 
 - POST /api/polka/webhooks: Handle external events from Polka (fake company)
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
-
-## License
-
-MIT
