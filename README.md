@@ -10,10 +10,6 @@ Chirpy is a simple social media application where users can post short messages 
 - Sort chirps in ascending or descending order
 - Webhooks for handling external events
 
-## Why Chirpy?
-
-Chirpy is a great starting point for anyone looking to learn how to build a web application with Go and PostgreSQL. It covers essential features like user authentication, CRUD operations, and handling webhooks, making it a valuable resource for both beginners and experienced developers.
-
 ## Installation
 
 ### Prerequisites
